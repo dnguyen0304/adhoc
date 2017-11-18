@@ -1,2 +1,2 @@
-# adhoc
-Interview materials for Ad Hoc.
+# adhoc_slcsp
+Solution to the Ad Hoc "slcsp" problem.
