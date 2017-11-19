@@ -52,9 +52,13 @@ def main():
     # Create the reader.
     reader = io.CsvReader(path=source_path)
 
+    # Include prepending.
+    reader = io.PrependingReader(reader=reader)
+
     # Create the functions.
     funcs = [
-        functions.MergeZipCodes(reader=io.CsvReader(path=zip_codes_path)),
+        functions.MergeZipCodes(
+            reader=io.PrependingReader(reader=io.CsvReader(path=zip_codes_path))),
         functions.MergePlans(reader=io.CsvReader(path=plans_path)),
         functions.CalculateSlcsp()]
 
