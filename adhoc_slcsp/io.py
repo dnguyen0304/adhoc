@@ -59,6 +59,28 @@ class CsvReader(Reader):
         return repr_.format(self.__class__.__name__, self._path)
 
 
+class MockReader(Reader):
+
+    def __init__(self, df):
+
+        """
+        Read from a data frame source.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+        """
+
+        self._df = df
+
+    def read(self):
+        return self._df
+
+    def __repr__(self):
+        repr_ = '{}(df={})'
+        return repr_.format(self.__class__.__name__, self._df)
+
+
 class PrependingReader(Reader):
 
     def __init__(self, reader):
