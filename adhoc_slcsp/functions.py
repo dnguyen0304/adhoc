@@ -2,6 +2,8 @@
 
 import abc
 
+import numpy as np
+
 
 # Python does not support a feature to define function interfaces
 # similar to the abc library for class interfaces.
@@ -94,3 +96,50 @@ class MergePlans(Pipeline):
     def __repr__(self):
         repr_ = '{}(reader={})'
         return repr_.format(self.__class__.__name__, self._reader)
+
+
+class CalculateSlcsp(Pipeline):
+
+    def __call__(self, df):
+
+        """
+        Calculate the second lowest cost silver plan (slcsp).
+        """
+
+        slcsp = df.loc[:, ['zipcode', 'rates']] \
+                  .groupby('zipcode') \
+                  .apply(self._helper)
+        # An alternative is to use pandas.Series.rename.
+        slcsp.name = 'rate'
+        # Update the index to maintain the original order.
+        # Remove the duplicated rows created by the merge (one-to-many
+        # SQL LEFT JOIN).
+        processed = slcsp.reindex(df.loc[:, 'zipcode'].drop_duplicates())
+        processed = processed.to_frame()
+        return processed
+
+    @staticmethod
+    def _helper(group):
+
+        """
+        Parameters
+        ----------
+        group : pandas.DataFrame
+
+        Returns
+        -------
+        float
+        """
+
+        try:
+            # This is equivalent to a vectorized sorted(rates)[-2],
+            # which has a time complexity of O(n log n) where n is the
+            # number of elements in the iterable.
+            slcsp = group.loc[:, 'rates'].nsmallest(2).values[1]
+        except IndexError:
+            slcsp = np.NaN
+        return slcsp
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
