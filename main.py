@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
+from adhoc_slcsp import functions
+from adhoc_slcsp import io
+
 
 class Application:
 
@@ -34,3 +39,46 @@ class Application:
                             self._reader,
                             self._funcs,
                             self._writer)
+
+
+def main():
+
+    # Set the configuration.
+    source_path = './data/slcsp.csv'
+    zip_codes_path = './data/zips.csv'
+    plans_path = './data/plans.csv'
+    processed_path = './data/slcsp-processed.csv'
+
+    # Create the reader.
+    reader = io.CsvReader(path=source_path)
+
+    # Create the functions.
+    funcs = [
+        functions.MergeZipCodes(reader=io.CsvReader(path=zip_codes_path)),
+        functions.MergePlans(reader=io.CsvReader(path=plans_path)),
+        functions.CalculateSlcsp()]
+
+    # Create the logger.
+    simple_formatter = logging.Formatter(
+        fmt='%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
+    stream_handler = logging.StreamHandler()
+    stream_handler.formatter = simple_formatter
+    logger = logging.getLogger(name=__name__)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(stream_handler)
+
+    # Include logging.
+    funcs = (functions.Logging(func=func, logger=logger) for func in funcs)
+
+    # Create the writer.
+    writer = io.CsvWriter(path=processed_path)
+
+    # Create the application.
+    application = Application(reader=reader, funcs=funcs, writer=writer)
+
+    application.start()
+
+
+if __name__ == '__main__':
+    main()
