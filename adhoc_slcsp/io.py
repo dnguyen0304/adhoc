@@ -59,6 +59,37 @@ class CsvReader(Reader):
         return repr_.format(self.__class__.__name__, self._path)
 
 
+class PrependingReader(Reader):
+
+    def __init__(self, reader):
+
+        """
+        Component to including prepending.
+
+        ZIP codes are not numerical but categorical data. The leading
+        zeroes should be preserved.
+
+        Parameters
+        ----------
+        reader : adhoc_slcsp.io.Reader
+        """
+
+        self._reader = reader
+
+    def read(self):
+        df = self._reader.read()
+        zip_codes = df.loc[:, 'zipcode'].astype(str)
+        # The str accessor is faster than mapping the len function and
+        # also handles numpy.NaN values.
+        fixed_width = zip_codes.str.len().max()
+        df.loc[:, 'zipcode'] = zip_codes.str.zfill(fixed_width)
+        return df
+
+    def __repr__(self):
+        repr_ = '{}(reader={})'
+        return repr_.format(self.__class__.__name__, self._reader)
+
+
 class CsvWriter(Writer):
 
     def __init__(self, path):
