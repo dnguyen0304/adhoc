@@ -57,3 +57,25 @@ class CsvReader(Reader):
     def __repr__(self):
         repr_ = '{}(path="{}")'
         return repr_.format(self.__class__.__name__, self._path)
+
+
+class CsvWriter(Writer):
+
+    def __init__(self, path):
+
+        """
+        Write to a CSV destination.
+
+        Parameters
+        ----------
+        path : str
+        """
+
+        self._path = path
+
+    def write(self, df):
+        df.to_csv(self._path)
+
+    def __repr__(self):
+        repr_ = '{}(path="{}")'
+        return repr_.format(self.__class__.__name__, self._path)
