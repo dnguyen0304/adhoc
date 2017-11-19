@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import abc
+import time
 
 import numpy as np
 
@@ -143,3 +144,36 @@ class CalculateSlcsp(Pipeline):
     def __repr__(self):
         repr_ = '{}()'
         return repr_.format(self.__class__.__name__)
+
+
+class Logging(Pipeline):
+
+    def __init__(self, func, logger):
+
+        """
+        Component to include logging.
+
+        Parameters
+        ----------
+        func : adhoc_slcsp.functions.Pipeline
+        logger : logging.Logger
+        """
+
+        self._func = func
+        self._logger = logger
+
+    def __call__(self, df):
+        template = ("""The <{}> computation returned {} rows after """
+                    """{:.9f} seconds.\n{}""")
+        start = time.time()
+        processed = self._func(df=df)
+        elapsed = time.time() - start
+        self._logger.debug(msg=template.format(self._func,
+                                               len(processed),
+                                               elapsed,
+                                               processed.head()))
+        return processed
+
+    def __repr__(self):
+        repr_ = '{}(func={}, logger={})'
+        return repr_.format(self.__class__.__name__, self._func, self._logger)
