@@ -2,6 +2,8 @@
 
 import abc
 
+import pandas as pd
+
 
 class Reader(metaclass=abc.ABCMeta):
 
@@ -33,3 +35,25 @@ class Writer(metaclass=abc.ABCMeta):
         """
 
         raise NotImplementedError
+
+
+class CsvReader(Reader):
+
+    def __init__(self, path):
+
+        """
+        Read from a CSV source.
+
+        Parameters
+        ----------
+        path : str
+        """
+
+        self._path = path
+
+    def read(self):
+        return pd.read_csv(self._path)
+
+    def __repr__(self):
+        repr_ = '{}(path="{}")'
+        return repr_.format(self.__class__.__name__, self._path)
