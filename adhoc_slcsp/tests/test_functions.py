@@ -111,3 +111,22 @@ class TestMergePlans:
         self.merge_plans = functions.MergePlans(reader=reader)
         self.expected = pd.DataFrame.from_records(data=expected_data,
                                                   columns=self.columns)
+
+
+class TestCalculateSlcsp:
+
+    def test_call(self):
+        columns = ('zipcode', 'rates')
+        data = [('00000', 0.0),
+                ('00000', 1.0)]
+        df = pd.DataFrame.from_records(data=data, columns=columns)
+
+        columns = ('zipcode', 'rate')
+        data = [('00000', 1.0)]
+        expected = pd.DataFrame.from_records(data=data, columns=columns)
+        expected.set_index(keys=columns[0], inplace=True)
+
+        calculate_slcsp = functions.CalculateSlcsp()
+        output = calculate_slcsp(df=df)
+
+        pd.testing.assert_frame_equal(expected, output)
