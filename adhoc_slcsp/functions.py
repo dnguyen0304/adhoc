@@ -61,3 +61,36 @@ class MergeZipCodes(Pipeline):
     def __repr__(self):
         repr_ = '{}(reader={})'
         return repr_.format(self.__class__.__name__, self._reader)
+
+
+class MergePlans(Pipeline):
+
+    def __init__(self, reader):
+
+        """
+        Merge with the plan lookup.
+
+        Parameters
+        ----------
+        reader : adhoc_slcsp.io.Reader
+        """
+
+        self._reader = reader
+
+    def __call__(self, df):
+        # This could be read into memory once and passed as a singleton
+        # dependency.
+        plans = self._reader.read()
+        # This raises an uncaught KeyError if the labels cannot be
+        # found in both data frames.
+        merged = df.merge(plans, how='left', on=['state', 'rate_area'])
+        # Fix the column label.
+        merged.rename(columns={
+                          'rate_y': 'rates'
+                      },
+                      inplace=True)
+        return merged
+
+    def __repr__(self):
+        repr_ = '{}(reader={})'
+        return repr_.format(self.__class__.__name__, self._reader)
