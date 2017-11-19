@@ -17,3 +17,19 @@ class Reader(metaclass=abc.ABCMeta):
         """
 
         raise NotImplementedError
+
+
+class Writer(metaclass=abc.ABCMeta):
+
+    @abc.abstractmethod
+    def write(self, df):
+
+        """
+        Write the data frame into a destination.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+        """
+
+        raise NotImplementedError
