@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     description = 'Solution to the Ad Hoc "slcsp" problem.'
 
-    with open('./README.md', 'r') as file:
+    with open('./COMMENTS.md', 'r') as file:
         long_description = file.read()
 
     install_requires = [
