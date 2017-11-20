@@ -7,9 +7,9 @@ Solution to the Ad Hoc "slcsp" problem.
 - Python 3.6.x
 
 ### Building
-1. Clone the repository.
+1. Unzip the package.
 ```
-git clone https://github.com/dnguyen0304/adhoc_slcsp.git
+unzip adhoc_slcsp
 ```
 2. Change the working directory.
 ```
