@@ -31,3 +31,14 @@ python ./setup.py test
 ```
 python ./main.py
 ```
+
+## Design
+```
+Reader -> Pipeline 1 -> Pipeline 2 -> ... Pipeline n -> Writer
+```
+The source data is read into memory by `io.Reader`s and passes through n
+computations by `functions.Pipeline`s. The processed data is written to
+disk by `io.Writer`s.
+
+The project is structured by dependency injection conventions. The factory and
+`Application` are found in `main.py`.
