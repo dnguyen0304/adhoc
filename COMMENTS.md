@@ -9,13 +9,9 @@ Solution to the Ad Hoc "slcsp" problem.
 ### Building
 1. Unzip the package.
 ```
-unzip adhoc_slcsp
+unzip adhoc_slcsp.zip
 ```
-2. Change the working directory.
-```
-cd adhoc_slcsp
-```
-3. Build the package.
+2. Build the package.
 ```
 python ./setup.py install
 ```
